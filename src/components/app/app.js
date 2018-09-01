@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
+import { Header } from 'semantic-ui-react'
 
 import './app.css';
 import 'semantic-ui-css/semantic.min.css';
 
-import Issue from '../issue';
+import Issues from '../issues/issues';
 
 class App extends Component {
   render() {
     return (
       <div className="app">
-        GitHub issues!
-
-        <Issue/>
+        <Header as='h1'>React issues</Header>
+        <Issues/>
       </div>
     );
   }
