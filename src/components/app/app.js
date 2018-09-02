@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Header } from 'semantic-ui-react'
+import { Header } from 'semantic-ui-react';
 
-import './app.css';
 import 'semantic-ui-css/semantic.min.css';
+import './app.css';
 
 import Issues from '../issues/issues';
 
