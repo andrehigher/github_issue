@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Table } from 'semantic-ui-react';
+import { Table, Icon } from 'semantic-ui-react';
 
 import Header from '../header/header';
 import Footer from '../footer/footer';
 import Label from '../label/label';
 import State from '../state/state';
+import Filter from '../filter/filter';
 import FormatDate from '../date/date';
 
 import './issue.css';
@@ -22,10 +23,16 @@ class Issues extends Component {
       error: null,
       activePage: 1,
       openIssues: 0,
+      state: GITHUB.state,
     };
 
     this.handlePaginationChange = (e, { activePage }) => {
       this.setState({ isLoading: true, activePage });
+      this.fetchIssues();
+    };
+
+    this.filterStatus = (e, {value}) => {
+      this.setState({ isLoading: true, state: value });
       this.fetchIssues();
     };
   }
@@ -38,9 +45,9 @@ class Issues extends Component {
   }
 
   fetchData(repoData) {
-    const { activePage } = this.state;
+    const { activePage, state } = this.state;
     this.setState({ openIssues: repoData.open_issues });
-    fetch(`${GITHUB.api}/repos/${GITHUB.owner}/${GITHUB.repo}/issues?state=${GITHUB.state}&page=${activePage}`)
+    fetch(`${GITHUB.api}/repos/${GITHUB.owner}/${GITHUB.repo}/issues?state=${state}&page=${activePage}`)
       .then(response => response.json())
       .then(data => this.setState({ issues: data, isLoading: false}))
       .catch(error => this.setState({ error, isLoading: false }));
@@ -59,11 +66,12 @@ class Issues extends Component {
     }
 
     if (isLoading) {
-      return <p>Loading issues...</p>;
+      return <Icon loading name='spinner' />;
     }
 
     return (
       <div>
+        <Filter filter={this.filterStatus}/>
         <Table celled>
           <Header/>
           <Table.Body>
