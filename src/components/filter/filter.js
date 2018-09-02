@@ -11,9 +11,9 @@ class Filter extends Component {
   render() {
     return (
       <Dropdown
-        placeholder='Filter state'
         selection
         options={options}
+        value={this.props.value}
         onChange={this.props.filter}
       />
     );

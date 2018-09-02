@@ -59,7 +59,7 @@ class Issues extends Component {
   }
 
   render() {
-    const { issues, isLoading, error, openIssues, activePage } = this.state;
+    const { issues, isLoading, error, openIssues, activePage, state } = this.state;
 
     if (error) {
       return <p>Something went wrong... Please retry later.</p>;
@@ -71,7 +71,7 @@ class Issues extends Component {
 
     return (
       <div>
-        <Filter filter={this.filterStatus}/>
+        <Filter filter={this.filterStatus} value={state}/>
         <Table celled>
           <Header/>
           <Table.Body>
