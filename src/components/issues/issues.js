@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { Table } from 'semantic-ui-react';
 
 import Header from '../header/header';
+import Footer from '../footer/footer';
 import Label from '../label/label';
 import State from '../state/state';
+import FormatDate from '../date/date';
 
 import './issue.css';
 
-const API = 'https://api.github.com/';
-const QUERY = 'repos/facebook/react/issues';
+import GITHUB from '../../config/github.json';
 
 class Issues extends Component {
 
@@ -19,29 +20,42 @@ class Issues extends Component {
       issues: [],
       isLoading: false,
       error: null,
+      activePage: 1,
+      openIssues: 0,
+    };
+
+    this.handlePaginationChange = (e, { activePage }) => {
+      this.setState({ isLoading: true, activePage });
+      this.fetchIssues();
     };
   }
 
-  componentDidMount() {
-    this.setState({ isLoading: true });
+  fetchIssues() {
+    fetch(`${GITHUB.api}/repos/${GITHUB.owner}/${GITHUB.repo}`)
+      .then(response => response.json())
+      .then(data => this.fetchData(data))
+      .catch(error => this.setState({ error, isLoading: false }));
+  }
 
-    fetch(API + QUERY)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Something went wrong ...');
-        }
-      })
+  fetchData(repoData) {
+    const { activePage } = this.state;
+    this.setState({ openIssues: repoData.open_issues });
+    fetch(`${GITHUB.api}/repos/${GITHUB.owner}/${GITHUB.repo}/issues?state=${GITHUB.state}&page=${activePage}`)
+      .then(response => response.json())
       .then(data => this.setState({ issues: data, isLoading: false}))
       .catch(error => this.setState({ error, isLoading: false }));
   }
 
+  componentDidMount() {
+    this.setState({ isLoading: true });
+    this.fetchIssues();
+  }
+
   render() {
-    const { issues, isLoading, error } = this.state;
+    const { issues, isLoading, error, openIssues, activePage } = this.state;
 
     if (error) {
-      return <p>{error.message}</p>;
+      return <p>Something went wrong... Please retry later.</p>;
     }
 
     if (isLoading) {
@@ -49,21 +63,28 @@ class Issues extends Component {
     }
 
     return (
-      <Table celled>
-        <Header/>
-        <Table.Body>
-          {issues.map(issue => 
-            <Table.Row key={issue.id}>
-              <Table.Cell>{issue.number}</Table.Cell>
-              <Table.Cell>{issue.title}</Table.Cell>
-              <Table.Cell>{issue.created_at}</Table.Cell>
-              <Table.Cell>{issue.updated_at}</Table.Cell>
-              <Table.Cell><Label labels={issue.labels}/></Table.Cell>
-              <Table.Cell><State state={issue.state}/></Table.Cell>
-            </Table.Row>
-          )}
-        </Table.Body>
-      </Table>
+      <div>
+        <Table celled>
+          <Header/>
+          <Table.Body>
+            {issues.map(issue => 
+              <Table.Row key={issue.id}>
+                <Table.Cell>{issue.number}</Table.Cell>
+                <Table.Cell>{issue.title}</Table.Cell>
+                <Table.Cell><FormatDate date={issue.created_at}/></Table.Cell>
+                <Table.Cell><FormatDate date={issue.updated_at}/></Table.Cell>
+                <Table.Cell><Label labels={issue.labels}/></Table.Cell>
+                <Table.Cell><State state={issue.state}/></Table.Cell>
+              </Table.Row>
+            )}
+          </Table.Body>
+        </Table>
+        <Footer 
+          activePage={activePage}
+          issues={openIssues} 
+          itemsPerPage={GITHUB.issues_per_page} 
+          onPageChange={this.handlePaginationChange}/>
+      </div>
     );
   }
 }
