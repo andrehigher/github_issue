@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import { Table, Icon } from 'semantic-ui-react';
 
-import Header from '../header/header';
-import Footer from '../footer/footer';
-import Label from '../label/label';
-import State from '../state/state';
-import Filter from '../filter/filter';
-import FormatDate from '../date/date';
+import Header from './header';
+import Footer from './footer';
+import Filter from './filter';
+import Content from './content';
 
-import './issue.css';
-
-import GITHUB from '../../config/github.json';
+import GITHUB from '../config/github.json';
 
 class Issues extends Component {
 
@@ -74,23 +70,11 @@ class Issues extends Component {
         <Filter filter={this.filterStatus} value={state}/>
         <Table celled>
           <Header/>
-          <Table.Body>
-            {issues.map(issue => 
-              <Table.Row key={issue.id}>
-                <Table.Cell>{issue.number}</Table.Cell>
-                <Table.Cell>{issue.title}</Table.Cell>
-                <Table.Cell><FormatDate date={issue.created_at}/></Table.Cell>
-                <Table.Cell><FormatDate date={issue.updated_at}/></Table.Cell>
-                <Table.Cell><Label labels={issue.labels}/></Table.Cell>
-                <Table.Cell><State state={issue.state}/></Table.Cell>
-              </Table.Row>
-            )}
-          </Table.Body>
+          <Content issues={issues} />
         </Table>
         <Footer 
           activePage={activePage}
-          issues={openIssues} 
-          itemsPerPage={GITHUB.issues_per_page} 
+          totalPages={parseInt(openIssues/GITHUB.issues_per_page, 10)} 
           onPageChange={this.handlePaginationChange}/>
       </div>
     );
