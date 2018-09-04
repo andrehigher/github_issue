@@ -9,9 +9,6 @@ To install dependencies in this project please run `yarn install`
 ## Running locally
 To run this project locally just run `yarn start` and go to [http://localhost:3000](http://localhost:3000).
 
-## Unit tests
-I created the files for unit testing but since I cannot add any adittional library, I did not try any test cases.
-
 ## Additional Feature
 I was not sure about what is an additional feature or not, so I implemented 2 features: 
 
