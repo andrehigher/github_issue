@@ -12,11 +12,6 @@ To run this project locally just run `yarn start` and go to [http://localhost:30
 ## Unit tests
 I created the files for unit testing but since I cannot add any adittional library, I did not try any test cases.
 
-## Naming convention
-Every component have their own folder and instead of use `index.js` inside each folder, it is the component name itself. Which means, if the project has the component `Lego`, instead of have `/lego/index.js` to be imported as `import Lego from ./lego`, I am using `/lego/lego.js`. In that way, to include this component the properly way to do it is `import Lego from ./lego/lego`. 
-
-It might be redundant thinking like that but it is easier to manage files when develop and debug. Instead of having a lot of `index.js` for each component, we know which component from its name.
-
 ## Additional Feature
 I was not sure about what is an additional feature or not, so I implemented 2 features: 
 
